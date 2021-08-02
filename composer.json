@@ -1,0 +1,50 @@
+{
+  "name": "digitalprint/printess-api-php",
+  "description": "Printess API client library for PHP.",
+  "keywords": [
+    "printess",
+    "print",
+    "automation",
+    "mass customization",
+    "editor"
+  ],
+  "homepage": "https://printess.com/",
+  "license": "BSD-2-Clause",
+  "authors": [
+    {
+      "name": "PrintPlanet GmbH",
+      "email": "technik@printplanet.de"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "composer/ca-bundle": "^1.1"
+  },
+  "require-dev": {
+    "eloquent/liberator": "^2.0",
+    "guzzlehttp/guzzle": "^6.3 || ^7.0",
+    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.1 || ^8.5",
+    "friendsofphp/php-cs-fixer": "^3.0"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Printess\\Api\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/",
+      "Tests\\Printess\\Api\\": "tests/Printess/API/"
+    }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit tests",
+    "format": "./vendor/bin/php-cs-fixer fix --allow-risky=yes"
+  }
+}
