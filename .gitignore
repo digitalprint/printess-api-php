@@ -1,6 +1,7 @@
 /.idea
 /build
 /vendor
+/examples/database/*
 /composer.lock
 .DS_Store
 composer.phar

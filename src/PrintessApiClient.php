@@ -3,10 +3,12 @@
 namespace Printess\Api;
 
 use GuzzleHttp\ClientInterface;
+use Printess\Api\Endpoints\ProductionEndpoint;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\Exceptions\IncompatiblePlatform;
 use Printess\Api\Exceptions\UnrecognizedClientException;
 use Printess\Api\HttpAdapter\PrintessHttpAdapterInterface;
+use Printess\Api\HttpAdapter\PrintessHttpAdapterPicker;
 use Printess\Api\HttpAdapter\PrintessHttpAdapterPickerInterface;
 use stdClass;
 
@@ -29,10 +31,10 @@ class PrintessApiClient
     /**
      * HTTP Methods
      */
-    const HTTP_GET = "GET";
-    const HTTP_POST = "POST";
-    const HTTP_DELETE = "DELETE";
-    const HTTP_PATCH = "PATCH";
+    public const HTTP_GET = "GET";
+    public const HTTP_POST = "POST";
+    public const HTTP_DELETE = "DELETE";
+    public const HTTP_PATCH = "PATCH";
 
     /**
      * @var PrintessHttpAdapterInterface
@@ -45,11 +47,11 @@ class PrintessApiClient
     protected $apiEndpoint = self::API_ENDPOINT;
 
     /**
-     * RESTful Payments resource.
+     * RESTful Production resource.
      *
-     * @var DirectoryEndpoint
+     * @var ProductionEndpoint
      */
-    public $directories;
+    public $production;
 
     /**
      * @var string
@@ -75,10 +77,10 @@ class PrintessApiClient
      */
     public function __construct($httpClient = null, PrintessHttpAdapterPickerInterface $httpAdapterPicker = null)
     {
-        $httpAdapterPicker = $httpAdapterPicker ?: new PrintessHttpAdapterPicker;
+        $httpAdapterPicker = $httpAdapterPicker ?: new PrintessHttpAdapterPicker();
         $this->httpClient = $httpAdapterPicker->pickHttpAdapter($httpClient);
 
-        $compatibilityChecker = new CompatibilityChecker;
+        $compatibilityChecker = new CompatibilityChecker();
         $compatibilityChecker->checkCompatibility();
 
         $this->initializeEndpoints();
@@ -94,7 +96,7 @@ class PrintessApiClient
 
     public function initializeEndpoints(): void
     {
-        $this->directories = new DirectoryEndpoint($this);
+        $this->production = new ProductionEndpoint($this);
     }
 
     /**
@@ -135,8 +137,8 @@ class PrintessApiClient
     {
         $apiKey = trim($apiKey);
 
-        if (! preg_match('/^(live|test)_\w{30,}$/', $apiKey)) {
-            throw new ApiException("Invalid API key: '$apiKey'. An API key must start with 'test_' or 'live_' and must be at least 30 characters long.");
+        if (! preg_match('/^[A-Za-z0-9\._-]{1024,}$/', $apiKey)) {
+            throw new ApiException("Invalid API key: '$apiKey'. An API key must be at least 1024 characters long.");
         }
 
         $this->apiKey = $apiKey;
@@ -155,8 +157,8 @@ class PrintessApiClient
     {
         $accessToken = trim($accessToken);
 
-        if (! preg_match('/^access_\w+$/', $accessToken)) {
-            throw new ApiException("Invalid OAuth access token: '$accessToken'. An access token must start with 'access_'.");
+        if (! preg_match('/^[A-Za-z0-9\._-]{1024,}$/', $accessToken)) {
+            throw new ApiException("Invalid API key: '$accessToken'. An API key must be at least 1024 characters long.");
         }
 
         $this->apiKey = $accessToken;
@@ -200,7 +202,7 @@ class PrintessApiClient
      *
      * @codeCoverageIgnore
      */
-    public function performHttpCall(string $httpMethod, string $apiMethod, string $httpBody = null): ?stdClass
+    public function performHttpCall(string $httpMethod, string $apiMethod, string $httpBody = null): stdClass
     {
         $url = $this->apiEndpoint . "/" . $apiMethod;
 
@@ -208,21 +210,18 @@ class PrintessApiClient
     }
 
     /**
-     * Perform an http call to a full url. This method is used by the resource specific classes.
+     * Perform a http call to a full url. This method is used by the resource specific classes.
      *
      * @param string $httpMethod
      * @param string $url
      * @param string|null $httpBody
      *
-     * @return stdClass|null
+     * @return stdClass
      * @throws ApiException
      *
      * @codeCoverageIgnore
-     *@see $isuers
-     *
-     * @see $payments
      */
-    public function performHttpCallToFullUrl(string $httpMethod, string $url, string $httpBody = null): ?stdClass
+    public function performHttpCallToFullUrl(string $httpMethod, string $url, string $httpBody = null): stdClass
     {
         if (empty($this->apiKey)) {
             throw new ApiException("You have not set an API key or OAuth access token. Please use setApiKey() to set the API key.");

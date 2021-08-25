@@ -3,6 +3,7 @@
 namespace Printess\Api\HttpAdapter;
 
 use Printess\Api\Exceptions\ApiException;
+use Psr\Http\Message\ResponseInterface;
 use stdClass;
 
 interface PrintessHttpAdapterInterface

@@ -6,6 +6,7 @@ use Composer\CaBundle\CaBundle;
 use InvalidArgumentException;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\PrintessApiClient;
+use Psr\Http\Message\ResponseInterface;
 use stdClass;
 
 class CurlPrintessHttpAdapter implements PrintessHttpAdapterInterface
@@ -30,10 +31,10 @@ class CurlPrintessHttpAdapter implements PrintessHttpAdapterInterface
      * @param string $url
      * @param array $headers
      * @param $httpBody
-     * @return stdClass|null
+     * @return ResponseInterface|null
      * @throws ApiException
      */
-    public function send($httpMethod, $url, $headers, $httpBody): ?stdClass
+    public function send($httpMethod, $url, $headers, $httpBody): ?ResponseInterface
     {
         $curl = curl_init($url);
         $headers["Content-Type"] = "application/json";

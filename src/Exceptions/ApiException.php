@@ -173,7 +173,7 @@ class ApiException extends Exception
      * @param $key
      * @return mixed|null
      */
-    public function getLink($key): ?string
+    public function getLink($key)
     {
         if ($this->hasLink($key)) {
             return $this->links[$key];

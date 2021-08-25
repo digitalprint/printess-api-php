@@ -6,14 +6,27 @@ Initializing the Printess API client, and setting your API key.
 
 ```php
 $printess = new \Printess\Api\PrintessApiClient();
-$printess->setApiKey("dHar4XY7LxsDOtmnkVtjNVWXLSlXsM");
+$printess->setAccessToken("TheVerySecretAccessToken");
 ``` 
 
-Creating a new directory.
+Creating a new produce job.
 
 ```php
-$directory = $printess->directories->create([
-    "parentId" => 46494203,
-    "name" => "veniam ipsum consectetur eiusmod ex",
-]);
+$job = $printess->production->produce([
+            'templateName' => 'st:thesavedjobtoken',
+            'outputSettings' => ['dpi' => 150],
+            'outputFiles' => [
+                [ 'documentName' => 'myDocument' ],
+            ],
+            'origin' => 'printess',
+        ]);
+```
+
+
+Get the job status with the link to the pdf file.
+
+```php
+$status = $printess->production->getStatus([
+        "jobId" => $job->jobId,
+    ]);
 ```
