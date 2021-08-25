@@ -2,7 +2,7 @@
 
 ## Getting started ##
 
-Initializing the Printess API client, and setting your API key.
+Initializing the Printess API client, and setting your AccessToken key.
 
 ```php
 $printess = new \Printess\Api\PrintessApiClient();
