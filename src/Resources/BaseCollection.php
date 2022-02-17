@@ -5,28 +5,10 @@ namespace Printess\Api\Resources;
 use ArrayObject;
 use stdClass;
 
-abstract class BaseCollection extends ArrayObject
+abstract class BaseCollection extends ArrayObject implements BaseCollectionInterface
 {
-    /**
-     * Total number of retrieved objects.
-     *
-     * @var int
-     */
-    public $count;
-
-    /**
-     * @var stdClass
-     */
-    public $_links;
-
-    /**
-     * @param int $count
-     * @param stdClass $_links
-     */
-    public function __construct($count, $_links)
+    public function __construct()
     {
-        $this->count = $count;
-        $this->_links = $_links;
         parent::__construct();
     }
 

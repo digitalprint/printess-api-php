@@ -5,11 +5,12 @@ namespace Printess\Api\Endpoints;
 use InvalidArgumentException;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\PrintessApiClient;
-use Printess\Api\Resources\BaseCollection;
-use Printess\Api\Resources\BaseResource;
+use Printess\Api\Resources\BaseCollectionInterface;
 use Printess\Api\Resources\ResourceFactory;
+use Printess\Api\Resources\ResourceInterface;
+use Printess\Api\Utils;
 
-abstract class EndpointAbstract
+abstract class EndpointAbstract implements EndpointInterface
 {
     public const REST_CREATE = PrintessApiClient::HTTP_POST;
     public const REST_UPDATE = PrintessApiClient::HTTP_PATCH;
@@ -66,11 +67,11 @@ abstract class EndpointAbstract
     /**
      * @param array $body
      * @param array $filters
-     * @param bool $status
-     * @return BaseResource
+     * @param string $context
+     * @return ResourceInterface
      * @throws ApiException
      */
-    protected function rest_create(array $body, array $filters, bool $status = false)
+    protected function rest_create(array $body, array $filters, string $context = EndpointInterface::RESULT_CONTEXT_OBJECT): ResourceInterface
     {
         $result = $this->client->performHttpCall(
             self::REST_CREATE,
@@ -78,7 +79,14 @@ abstract class EndpointAbstract
             $this->parseRequestBody($body)
         );
 
-        return ResourceFactory::createFromApiResult($result, $this->getResourceObject($status));
+        if (EndpointInterface::RESULT_CONTEXT_RAW === $context) {
+            $resourceObject = $this->getResourceObject($context);
+            $resourceObject->setResult(Utils::object_to_array($result));
+
+            return $resourceObject;
+        }
+
+        return ResourceFactory::createFromApiResult($result, $this->getResourceObject($context));
     }
 
     /**
@@ -87,10 +95,10 @@ abstract class EndpointAbstract
      * @param string $id
      * @param array $body
      *
-     * @return BaseResource
+     * @return ResourceInterface
      * @throws ApiException
      */
-    protected function rest_update($id, array $body = [])
+    protected function rest_update(string $id, array $body = []): ?ResourceInterface
     {
         if (empty($id)) {
             throw new ApiException("Invalid resource id.");
@@ -115,10 +123,10 @@ abstract class EndpointAbstract
      *
      * @param string $id Id of the object to retrieve.
      * @param array $filters
-     * @return BaseResource
+     * @return ResourceInterface
      * @throws ApiException
      */
-    protected function rest_read($id, array $filters)
+    protected function rest_read(string $id, array $filters): ResourceInterface
     {
         if (empty($id)) {
             throw new ApiException("Invalid resource id.");
@@ -139,10 +147,10 @@ abstract class EndpointAbstract
      * @param string $id
      * @param array $body
      *
-     * @return BaseResource
+     * @return ResourceInterface
      * @throws ApiException
      */
-    protected function rest_delete($id, array $body = [])
+    protected function rest_delete(string $id, array $body = []): ?ResourceInterface
     {
         if (empty($id)) {
             throw new ApiException("Invalid resource id.");
@@ -155,7 +163,7 @@ abstract class EndpointAbstract
             $this->parseRequestBody($body)
         );
 
-        if ($result === null) {
+        if (null === $result) {
             return null;
         }
 
@@ -165,14 +173,14 @@ abstract class EndpointAbstract
     /**
      * Get a collection of objects from the REST API.
      *
-     * @param string $from The first resource ID you want to include in your list.
-     * @param int $limit
+     * @param string|null $from The first resource ID you want to include in your list.
+     * @param int|null $limit
      * @param array $filters
      *
-     * @return BaseCollection
+     * @return BaseCollectionInterface
      * @throws ApiException
      */
-    protected function rest_list($from = null, $limit = null, array $filters = [])
+    protected function rest_list(string $from = null, int $limit = null, array $filters = []): BaseCollectionInterface
     {
         $filters = array_merge(["from" => $from, "limit" => $limit], $filters);
 
@@ -192,9 +200,10 @@ abstract class EndpointAbstract
     /**
      * Get the object that is used by this API endpoint. Every API endpoint uses one type of object.
      *
-     * @return BaseResource
+     * @param string $context
+     * @return ResourceInterface
      */
-    abstract protected function getResourceObject();
+    abstract protected function getResourceObject(string $context = EndpointInterface::RESULT_CONTEXT_OBJECT): ResourceInterface;
 
     /**
      * @param string $resourcePath

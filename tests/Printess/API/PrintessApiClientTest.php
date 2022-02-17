@@ -29,6 +29,8 @@ class PrintessApiClientTest extends TestCase
      */
     private $printessApiClient;
 
+    private $apiKey;
+
     /**
      * @throws ApiException
      * @throws IncompatiblePlatform
@@ -38,10 +40,12 @@ class PrintessApiClientTest extends TestCase
     {
         parent::setUp();
 
+        $this->apiKey = str_repeat("X", 1024);
+
         $this->guzzleClient = $this->createMock(Client::class);
         $this->printessApiClient = new PrintessApiClient($this->guzzleClient);
 
-        $this->printessApiClient->setApiKey('test_foobarfoobarfoobarfoobarfoobar');
+        $this->printessApiClient->setApiKey($this->apiKey);
     }
 
     /**
@@ -186,7 +190,7 @@ class PrintessApiClientTest extends TestCase
         $fakeAdapter = new FakeHttpAdapter($response);
 
         $printessClient = new PrintessApiClient($fakeAdapter);
-        $printessClient->setApiKey('test_foobarfoobarfoobarfoobarfoobar');
+        $printessClient->setApiKey($this->apiKey);
 
         $printessClient->performHttpCallToFullUrl('GET', '', '');
 
@@ -198,7 +202,7 @@ class PrintessApiClientTest extends TestCase
         $this->assertArrayHasKey('X-Printess-Client-Info', $usedHeaders);
 
         # these should be exactly the expected values
-        $this->assertEquals('Bearer test_foobarfoobarfoobarfoobarfoobar', $usedHeaders['Authorization']);
+        $this->assertEquals('Bearer ' . $this->apiKey, $usedHeaders['Authorization']);
         $this->assertEquals('application/json', $usedHeaders['Accept']);
         $this->assertEquals('application/json', $usedHeaders['Content-Type']);
     }
@@ -218,7 +222,7 @@ class PrintessApiClientTest extends TestCase
         $fakeAdapter = new FakeHttpAdapter($response);
 
         $printessClient = new PrintessApiClient($fakeAdapter);
-        $printessClient->setApiKey('test_foobarfoobarfoobarfoobarfoobar');
+        $printessClient->setApiKey($this->apiKey);
 
         $printessClient->performHttpCallToFullUrl('GET', '');
 

@@ -4,7 +4,7 @@ namespace Printess\Api\Resources;
 
 use Printess\Api\Exceptions\ApiException;
 
-class GetStatus extends BaseResource
+class DirectoriesLoad extends BaseResource
 {
     /**
      * @var string
@@ -19,20 +19,6 @@ class GetStatus extends BaseResource
     public $mode;
 
     /**
-     * Id of the job.
-     *
-     * @var string
-     */
-    public $jobId;
-
-    /**
-     * orderId of the job.
-     *
-     * @var string
-     */
-    public $result;
-
-    /**
      * @param array $options
      * @param array $filters
      *
@@ -41,6 +27,6 @@ class GetStatus extends BaseResource
      */
     public function create(array $options = [], array $filters = []): self
     {
-        return $this->client->production->getStatus($this->withPresetOptions($options), $filters);
+        return $this->client->directories->load($this->withPresetOptions($options), $filters);
     }
 }

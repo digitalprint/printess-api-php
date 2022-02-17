@@ -3,7 +3,9 @@
 namespace Printess\Api;
 
 use GuzzleHttp\ClientInterface;
+use Printess\Api\Endpoints\DirectoriesEndpoint;
 use Printess\Api\Endpoints\ProductionEndpoint;
+use Printess\Api\Endpoints\TemplatesEndpoint;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\Exceptions\IncompatiblePlatform;
 use Printess\Api\Exceptions\UnrecognizedClientException;
@@ -11,6 +13,7 @@ use Printess\Api\HttpAdapter\PrintessHttpAdapterInterface;
 use Printess\Api\HttpAdapter\PrintessHttpAdapterPicker;
 use Printess\Api\HttpAdapter\PrintessHttpAdapterPickerInterface;
 use stdClass;
+use Tests\Printess\API\Endpoints\TemplatesEndpointTest;
 
 class PrintessApiClient
 {
@@ -52,6 +55,20 @@ class PrintessApiClient
      * @var ProductionEndpoint
      */
     public $production;
+
+    /**
+     * RESTful Directory resource.
+     *
+     * @var DirectoriesEndpoint
+     */
+    public $directories;
+
+    /**
+     * RESTful Template resource.
+     *
+     * @var TemplatesEndpoint
+     */
+    public $templates;
 
     /**
      * @var string
@@ -97,6 +114,8 @@ class PrintessApiClient
     public function initializeEndpoints(): void
     {
         $this->production = new ProductionEndpoint($this);
+        $this->directories = new DirectoriesEndpoint($this);
+        $this->templates = new TemplatesEndpoint($this);
     }
 
     /**

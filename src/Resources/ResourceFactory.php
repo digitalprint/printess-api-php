@@ -10,11 +10,11 @@ class ResourceFactory
      * Create resource object from Api result
      *
      * @param object $apiResult
-     * @param BaseResource $resource
+     * @param ResourceInterface $resource
      *
-     * @return BaseResource
+     * @return ResourceInterface
      */
-    public static function createFromApiResult($apiResult, BaseResource $resource): BaseResource
+    public static function createFromApiResult($apiResult, ResourceInterface $resource): ResourceInterface
     {
         foreach ($apiResult as $property => $value) {
             $resource->{$property} = $value;
