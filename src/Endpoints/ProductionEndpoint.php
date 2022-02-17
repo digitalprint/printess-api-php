@@ -5,24 +5,21 @@ namespace Printess\Api\Endpoints;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\Resources\GetStatus;
 use Printess\Api\Resources\ProduceJob;
+use Printess\Api\Resources\ResourceInterface;
 
 class ProductionEndpoint extends EndpointAbstract
 {
     protected $resourcePath = "production";
 
     /**
-     * @var string
-     */
-    public const RESOURCE_ID_PREFIX = '';
-
-    /**
      * Get the object that is used by this API endpoint.
      *
-     * @return ProduceJob|GetStatus
+     * @param string $context
+     * @return ResourceInterface
      */
-    protected function getResourceObject(bool $status = false)
+    protected function getResourceObject(string $context = EndpointInterface::RESULT_CONTEXT_OBJECT): ResourceInterface
     {
-        if (true === $status) {
+        if (EndpointInterface::RESULT_CONTEXT_STATUS === $context) {
             return new GetStatus($this->client);
         }
 
@@ -38,7 +35,7 @@ class ProductionEndpoint extends EndpointAbstract
      * @return ProduceJob
      * @throws ApiException
      */
-    public function produce(array $data = [], array $filters = []): ProduceJob
+    public function produce(array $data = [], array $filters = []): ResourceInterface
     {
         $this->resourcePath = "production/produce";
 
@@ -50,14 +47,13 @@ class ProductionEndpoint extends EndpointAbstract
      *
      * @param array $data An array containing details on the directory.
      * @param array $filters
-     *
      * @return GetStatus
      * @throws ApiException
      */
-    public function getStatus(array $data = [], array $filters = [], bool $status = false): GetStatus
+    public function getStatus(array $data = [], array $filters = []): ResourceInterface
     {
         $this->resourcePath = "production/status/get";
 
-        return $this->rest_create($data, $filters, true);
+        return $this->rest_create($data, $filters, EndpointInterface::RESULT_CONTEXT_STATUS);
     }
 }
