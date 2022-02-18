@@ -240,7 +240,7 @@ abstract class EndpointAbstract implements EndpointInterface
     protected function parseRequestBody(array $body): ?string
     {
         if (empty($body)) {
-            return null;
+            return "{}";
         }
 
         try {

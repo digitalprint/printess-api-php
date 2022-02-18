@@ -49,7 +49,7 @@ class TemplatesEndpoint extends EndpointAbstract
      */
     public function loadDetails(array $data = [], array $filters = []): ResourceInterface
     {
-        $this->resourcePath = "templates/details";
+        $this->resourcePath = "template/details";
 
         return $this->rest_create($data, $filters, EndpointInterface::RESULT_CONTEXT_RAW);
     }
