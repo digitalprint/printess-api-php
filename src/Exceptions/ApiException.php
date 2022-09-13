@@ -111,7 +111,7 @@ class ApiException extends Exception
         }
 
         return new self(
-            "Error executing API call ($object->status: $object->title): $object->detail",
+            "Error executing API call ($object->c): $object->m",
             $response->getStatusCode(),
             $field,
             $request,
