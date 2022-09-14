@@ -39,9 +39,9 @@ class TemplatesEndpoint extends EndpointAbstract
     }
 
     /**
-     * Load the user directory Tree
+     * Load the template details
      *
-     * @param array $data An array containing details on the directory.
+     * @param array $data An array containing details
      * @param array $filters
      *
      * @return BaseTemplate
@@ -50,6 +50,22 @@ class TemplatesEndpoint extends EndpointAbstract
     public function loadDetails(array $data = [], array $filters = []): ResourceInterface
     {
         $this->resourcePath = "template/details";
+
+        return $this->rest_create($data, $filters, EndpointInterface::RESULT_CONTEXT_RAW);
+    }
+
+    /**
+     * Load the template form fields
+     *
+     * @param array $data An array containing the form fields
+     * @param array $filters
+     *
+     * @return BaseTemplate
+     * @throws ApiException
+     */
+    public function loadFormFields(array $data = [], array $filters = []): ResourceInterface
+    {
+        $this->resourcePath = "template/formFields";
 
         return $this->rest_create($data, $filters, EndpointInterface::RESULT_CONTEXT_RAW);
     }

@@ -162,4 +162,99 @@ class TemplatesEndpointTest extends BaseEndpointTest
         $this->assertEquals(872, $result->getResult()['id']);
         $this->assertIsArray($result->getResult()['images']);
     }
+
+
+
+    /**
+     * @throws IncompatiblePlatform
+     * @throws ApiException
+     * @throws UnrecognizedClientException
+     */
+    public function testTemplatesFormFields(): void
+    {
+        $this->mockApiCall(
+            new Request(
+                "POST",
+                "/templates/formFields",
+                [],
+                '{ "templateName": "photo_snow" }'
+            ),
+            new Response(
+                200,
+                [],
+                '{
+                    "formFields": [
+                        {
+                            "name": "DOCUMENT_SIZE",
+                            "display": "Document Size",
+                            "value": "381x269",
+                            "visibility": "admin",
+                            "isPriceRelevant": false,
+                            "entries": [
+                                {
+                                    "key": "381x269",
+                                    "label": "381x269mm",
+                                    "description": null
+                                }
+                            ]
+                        },
+                        {
+                            "name": "edgeLeft",
+                            "display": "edgeLeft",
+                            "value": "12",
+                            "visibility": "admin",
+                            "isPriceRelevant": false,
+                            "entries": []
+                        },
+                        {
+                            "name": "edgeRight",
+                            "display": "edgeTop",
+                            "value": "11.5",
+                            "visibility": "admin",
+                            "isPriceRelevant": false,
+                            "entries": []
+                        },
+                        {
+                            "name": "COLOR_SCHEME",
+                            "display": "Farbauswahl",
+                            "value": "RED",
+                            "visibility": "buyer",
+                            "isPriceRelevant": false,
+                            "entries": [
+                                {
+                                    "key": "RED",
+                                    "label": "rot",
+                                    "description": "red"
+                                },
+                                {
+                                    "key": "BLUE",
+                                    "label": "blau",
+                                    "description": "blue"
+                                },
+                                {
+                                    "key": "GREEN",
+                                    "label": "grün",
+                                    "description": "green"
+                                }
+                            ]
+                        }
+                    ],
+                    "documentFormFields": [
+                        {
+                            "documentId": "P1aVYrfyvJYpQHFW84D3F",
+                            "documentName": "advk",
+                            "formFields": []
+                        }
+                    ]
+                }'
+            )
+        );
+
+        $result = $this->apiClient->templates->loadFormFields(['templateName' => 'photo_snow']);
+
+        $this->assertInstanceOf(BaseTemplate::class, $result);
+
+        $this->assertIsArray($result->getResult()['formFields']);
+    }
+
 }
