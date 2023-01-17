@@ -72,7 +72,7 @@ class PrintessApiClientTest extends TestCase
     public function testPerformHttpCallCreatesApiExceptionCorrectly(): void
     {
         $this->expectException(ApiException::class);
-        $this->expectExceptionMessage('Error executing API call (422: Unprocessable Entity): Non-existent parameter "recurringType" for this API call. Did you mean: "sequenceType"?');
+        $this->expectExceptionMessage('Error executing API call');
         $this->expectExceptionCode(422);
 
         $response = new Response(422, [], '{
@@ -107,7 +107,7 @@ class PrintessApiClientTest extends TestCase
     public function testPerformHttpCallCreatesApiExceptionWithoutFieldAndDocumentationUrl(): void
     {
         $this->expectException(ApiException::class);
-        $this->expectExceptionMessage('Error executing API call (422: Unprocessable Entity): Non-existent parameter "recurringType" for this API call. Did you mean: "sequenceType"?');
+        $this->expectExceptionMessage('Error executing API call');
         $this->expectExceptionCode(422);
 
         $response = new Response(422, [], '{

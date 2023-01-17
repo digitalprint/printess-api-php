@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Response;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\Exceptions\IncompatiblePlatform;
 use Printess\Api\Exceptions\UnrecognizedClientException;
+use Printess\Api\Resources\GetSimpleStatus;
 use Printess\Api\Resources\GetStatus;
 use Printess\Api\Resources\ProduceJob;
 use Tests\Printess\TestHelpers\LinkObjectTestHelpers;
@@ -271,5 +272,46 @@ class ProductionEndpointTest extends BaseEndpointTest
 
         $this->assertInstanceOf(GetStatus::class, $status);
         $this->assertEquals('478191510f2762b735e3066bd443f85bfa356377_20210825T105914720_5ef63a98-fcf6-45be-b160-6e6504b9c242', $status->jobId);
+    }
+
+    /**
+     * @throws IncompatiblePlatform
+     * @throws ApiException
+     * @throws UnrecognizedClientException
+     */
+    public function testGetSimpleStatusOfEnqueuedJob(): void
+    {
+        $this->mockApiCall(
+            new Request(
+                "POST",
+                "/production/status/pdf/get",
+                [],
+                '{
+                  "jobId": "478191510f2762b735e3066bd443f85bfa356377_20230116T132507330_8f863082-9eff-4322-9b86-564318988460"
+                }'
+            ),
+            new Response(
+                200,
+                [],
+                '{
+                    "isFinalStatus": true,
+                    "isError": false,
+                    "errorDetails": null,
+                    "pdfs": [
+                        {
+                            "documentName": "print",
+                            "url": "https://printess-prod.s3.eu-central-1.amazonaws.com/output/478191510f2762b735e3066bd443f85bfa356377_20230116T132507330_8f863082-9eff-4322-9b86-564318988460_1.pdf"
+                        }
+                    ]
+                }'
+            )
+        );
+
+        $status = $this->apiClient->production->getSimpleStatus([
+            "jobId" => "478191510f2762b735e3066bd443f85bfa356377_20230116T132507330_8f863082-9eff-4322-9b86-564318988460",
+        ]);
+
+        $this->assertInstanceOf(GetSimpleStatus::class, $status);
+        $this->assertCount(1, $status->pdfs);
     }
 }

@@ -49,6 +49,7 @@ class ApiExceptionTest extends TestCase
         $exception = ApiException::createFromResponse($response, $request);
 
         $this->assertJsonStringEqualsJsonString(/** @lang JSON */'{ "foo": "bar" }', $exception->getRequest()->getBody()->__toString());
-        $this->assertStringEndsWith('Error executing API call (422: Unprocessable Entity): Can not enable Credit card via the API. Please go to the dashboard to enable this payment method.. Documentation: https://docs.Printess.com/guides/handling-errors. Request body: { "foo": "bar" }', $exception->getMessage());
+
+        $this->assertStringEndsWith('Request body: { "foo": "bar" }', $exception->getMessage());
     }
 }

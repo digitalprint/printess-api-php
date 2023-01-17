@@ -98,7 +98,7 @@ class TemplatesEndpointTest extends BaseEndpointTest
         $this->mockApiCall(
             new Request(
                 "POST",
-                "/templates/details",
+                "/template/details",
                 [],
                 '{ "templateId": 872 }'
             ),
@@ -175,7 +175,7 @@ class TemplatesEndpointTest extends BaseEndpointTest
         $this->mockApiCall(
             new Request(
                 "POST",
-                "/templates/formFields",
+                "/template/formFields",
                 [],
                 '{ "templateName": "photo_snow" }'
             ),
