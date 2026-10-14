@@ -1,4 +1,6 @@
+/.ddev
 /.idea
+/.junie
 /htdocs
 /vendor
 /composer.lock
