@@ -48,9 +48,9 @@ class FakeHttpAdapter implements PrintessHttpAdapterInterface
      * @param $url
      * @param $headers
      * @param $httpBody
-     * @return stdClass
+     * @return stdClass|array|null
      */
-    public function send($httpMethod, $url, $headers, $httpBody): stdClass
+    public function send($httpMethod, $url, $headers, $httpBody)
     {
         $this->usedMethod = $httpMethod;
         $this->usedUrl = $url;
@@ -103,11 +103,15 @@ class FakeHttpAdapter implements PrintessHttpAdapterInterface
     /**
      * Parse the PSR-7 Response body
      *
-     * @param ResponseInterface $response
-     * @return stdClass|null
+     * @param ResponseInterface|null $response
+     * @return stdClass|array|null
      */
-    private function parseResponseBody(ResponseInterface $response): ?stdClass
+    private function parseResponseBody(?ResponseInterface $response)
     {
+        if ($response === null) {
+            return null;
+        }
+
         $body = (string) $response->getBody();
 
         return @json_decode($body, false);

@@ -14,8 +14,8 @@ use Printess\Api\Exceptions\IncompatiblePlatform;
 use Printess\Api\Exceptions\UnrecognizedClientException;
 use Printess\Api\HttpAdapter\Guzzle6And7PrintessHttpAdapter;
 use Printess\Api\PrintessApiClient;
-use Tests\Printess\TestHelpers\FakeHttpAdapter;
 use function serialize;
+use Tests\Printess\TestHelpers\FakeHttpAdapter;
 
 class PrintessApiClientTest extends TestCase
 {
@@ -76,9 +76,8 @@ class PrintessApiClientTest extends TestCase
         $this->expectExceptionCode(422);
 
         $response = new Response(422, [], '{
-            "status": 422,
-            "title": "Unprocessable Entity",
-            "detail": "Non-existent parameter \"recurringType\" for this API call. Did you mean: \"sequenceType\"?",
+            "c": 422,
+            "m": "Non-existent parameter \"recurringType\" for this API call. Did you mean: \"sequenceType\"?",
             "field": "recurringType",
             "_links": {
                 "documentation": {
@@ -111,9 +110,8 @@ class PrintessApiClientTest extends TestCase
         $this->expectExceptionCode(422);
 
         $response = new Response(422, [], '{
-            "status": 422,
-            "title": "Unprocessable Entity",
-            "detail": "Non-existent parameter \"recurringType\" for this API call. Did you mean: \"sequenceType\"?"
+            "c": 422,
+            "m": "Non-existent parameter \"recurringType\" for this API call. Did you mean: \"sequenceType\"?"
         }');
 
         $this->guzzleClient

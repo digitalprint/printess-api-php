@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace Printess\Api\Exceptions;
 
@@ -52,9 +52,9 @@ class ApiException extends Exception
         $message = "",
         $code = 0,
         $field = null,
-        RequestInterface $request = null,
-        ResponseInterface $response = null,
-        Throwable $previous = null
+        ?RequestInterface $request = null,
+        ?ResponseInterface $response = null,
+        ?Throwable $previous = null
     ) {
         $this->raisedAt = new DateTimeImmutable();
 
@@ -101,7 +101,7 @@ class ApiException extends Exception
      * @return ApiException
      * @throws ApiException
      */
-    public static function createFromResponse(ResponseInterface $response, RequestInterface $request = null, Throwable $previous = null): ApiException
+    public static function createFromResponse(ResponseInterface $response, ?RequestInterface $request = null, ?Throwable $previous = null): self
     {
         $object = static::parseResponseBody($response);
 
@@ -110,8 +110,21 @@ class ApiException extends Exception
             $field = $object->field;
         }
 
+        $message = "Error executing API call";
+        if (isset($object->c, $object->m)) {
+            $message .= " ($object->c): $object->m";
+        } elseif (isset($object->m)) {
+            $message .= ": $object->m";
+        } elseif (isset($object->status, $object->title, $object->detail)) {
+            $message .= " ($object->status: $object->title): $object->detail";
+        } elseif (isset($object->detail)) {
+            $message .= ": $object->detail";
+        } elseif (isset($object->title)) {
+            $message .= ": $object->title";
+        }
+
         return new self(
-            "Error executing API call ($object->c): $object->m",
+            $message,
             $response->getStatusCode(),
             $field,
             $request,

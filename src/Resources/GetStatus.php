@@ -33,6 +33,16 @@ class GetStatus extends BaseResource
     public $result;
 
     /**
+     * @var bool|null
+     */
+    public $isFinalStatus;
+
+    /**
+     * @var bool|null
+     */
+    public $isSuccess;
+
+    /**
      * @param array $options
      * @param array $filters
      *

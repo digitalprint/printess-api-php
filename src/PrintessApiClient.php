@@ -5,6 +5,7 @@ namespace Printess\Api;
 use GuzzleHttp\ClientInterface;
 use Printess\Api\Endpoints\DirectoriesEndpoint;
 use Printess\Api\Endpoints\ProductionEndpoint;
+use Printess\Api\Endpoints\SaveTokenEndpoint;
 use Printess\Api\Endpoints\TemplatesEndpoint;
 use Printess\Api\Exceptions\ApiException;
 use Printess\Api\Exceptions\IncompatiblePlatform;
@@ -13,7 +14,6 @@ use Printess\Api\HttpAdapter\PrintessHttpAdapterInterface;
 use Printess\Api\HttpAdapter\PrintessHttpAdapterPicker;
 use Printess\Api\HttpAdapter\PrintessHttpAdapterPickerInterface;
 use stdClass;
-use Tests\Printess\API\Endpoints\TemplatesEndpointTest;
 
 class PrintessApiClient
 {
@@ -71,6 +71,20 @@ class PrintessApiClient
     public $templates;
 
     /**
+     * RESTful Save Token resource.
+     *
+     * @var SaveTokenEndpoint
+     */
+    public $savetoken;
+
+    /**
+     * RESTful Save Token resource.
+     *
+     * @var SaveTokenEndpoint
+     */
+    public $saveToken;
+
+    /**
      * @var string
      */
     protected $apiKey;
@@ -92,7 +106,7 @@ class PrintessApiClient
      * @param PrintessHttpAdapterPickerInterface|null $httpAdapterPicker
      * @throws IncompatiblePlatform|UnrecognizedClientException
      */
-    public function __construct($httpClient = null, PrintessHttpAdapterPickerInterface $httpAdapterPicker = null)
+    public function __construct($httpClient = null, ?PrintessHttpAdapterPickerInterface $httpAdapterPicker = null)
     {
         $httpAdapterPicker = $httpAdapterPicker ?: new PrintessHttpAdapterPicker();
         $this->httpClient = $httpAdapterPicker->pickHttpAdapter($httpClient);
@@ -116,6 +130,8 @@ class PrintessApiClient
         $this->production = new ProductionEndpoint($this);
         $this->directories = new DirectoriesEndpoint($this);
         $this->templates = new TemplatesEndpoint($this);
+        $this->savetoken = new SaveTokenEndpoint($this);
+        $this->saveToken = $this->savetoken;
     }
 
     /**
@@ -216,12 +232,12 @@ class PrintessApiClient
      * @param string $apiMethod
      * @param string|null $httpBody
      *
-     * @return stdClass
+     * @return stdClass|array|null
      * @throws ApiException
      *
      * @codeCoverageIgnore
      */
-    public function performHttpCall(string $httpMethod, string $apiMethod, string $httpBody = null): stdClass
+    public function performHttpCall(string $httpMethod, string $apiMethod, ?string $httpBody = null)
     {
         $url = $this->apiEndpoint . "/" . $apiMethod;
 
@@ -235,12 +251,12 @@ class PrintessApiClient
      * @param string $url
      * @param string|null $httpBody
      *
-     * @return stdClass
+     * @return stdClass|array|null
      * @throws ApiException
      *
      * @codeCoverageIgnore
      */
-    public function performHttpCallToFullUrl(string $httpMethod, string $url, string $httpBody = null): stdClass
+    public function performHttpCallToFullUrl(string $httpMethod, string $url, ?string $httpBody = null)
     {
         if (empty($this->apiKey)) {
             throw new ApiException("You have not set an API key or OAuth access token. Please use setApiKey() to set the API key.");

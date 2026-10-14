@@ -180,7 +180,7 @@ abstract class EndpointAbstract implements EndpointInterface
      * @return BaseCollectionInterface
      * @throws ApiException
      */
-    protected function rest_list(string $from = null, int $limit = null, array $filters = []): BaseCollectionInterface
+    protected function rest_list(?string $from = null, ?int $limit = null, array $filters = []): BaseCollectionInterface
     {
         $filters = array_merge(["from" => $from, "limit" => $limit], $filters);
 

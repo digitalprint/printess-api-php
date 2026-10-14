@@ -3,7 +3,6 @@
 namespace Printess\Api\HttpAdapter;
 
 use Printess\Api\Exceptions\ApiException;
-use Psr\Http\Message\ResponseInterface;
 use stdClass;
 
 interface PrintessHttpAdapterInterface
@@ -15,10 +14,10 @@ interface PrintessHttpAdapterInterface
      * @param $url
      * @param $headers
      * @param $httpBody
-     * @return stdClass|null
+     * @return stdClass|array|null
      * @throws ApiException
      */
-    public function send($httpMethod, $url, $headers, $httpBody): ?stdClass;
+    public function send($httpMethod, $url, $headers, $httpBody);
 
     /**
      * The version number for the underlying http client, if available.

@@ -9,8 +9,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions as GuzzleRequestOptions;
-use Psr\Http\Message\ResponseInterface;
 use Printess\Api\Exceptions\ApiException;
+use Psr\Http\Message\ResponseInterface;
 use stdClass;
 
 class Guzzle6And7PrintessHttpAdapter implements PrintessHttpAdapterInterface
@@ -68,10 +68,10 @@ class Guzzle6And7PrintessHttpAdapter implements PrintessHttpAdapterInterface
      * @param $url
      * @param $headers
      * @param $httpBody
-     * @return stdClass|null
+     * @return stdClass|array|null
      * @throws ApiException
      */
-    public function send($httpMethod, $url, $headers, $httpBody): ?stdClass
+    public function send($httpMethod, $url, $headers, $httpBody)
     {
         $request = new Request($httpMethod, $url, $headers, $httpBody);
 
@@ -100,15 +100,15 @@ class Guzzle6And7PrintessHttpAdapter implements PrintessHttpAdapterInterface
      * Parse the PSR-7 Response body
      *
      * @param ResponseInterface $response
-     * @return stdClass|null
+     * @return stdClass|array|null
      * @throws ApiException
      */
-    private function parseResponseBody(ResponseInterface $response): ?stdClass
+    private function parseResponseBody(ResponseInterface $response)
     {
         $body = (string) $response->getBody();
         if (empty($body)) {
-            if ($response->getStatusCode() === self::HTTP_NO_CONTENT) {
-                return null;
+            if ($response->getStatusCode() === self::HTTP_NO_CONTENT || $response->getStatusCode() === 200) {
+                return (object) [];
             }
 
             throw new ApiException("No response body found.");
